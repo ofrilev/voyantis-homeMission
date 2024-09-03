@@ -2,60 +2,87 @@ import { useRef, useState } from "react";
 
 import "./App.css";
 import { fetchQueue, postQueue } from "./api";
+import {
+  ButtonsWrapper,
+  CurrentMessage,
+  CurrentMessageWrapper,
+  GetQueueButton,
+  GetQueueButtonWrapper,
+  MessageInput,
+  PostMessageButton,
+  PostMessageButtonWrapper,
+  PostMessageStatus,
+  PostMessageStatusWrapper,
+  QueueInput,
+  QueueInputWrapper,
+  QueueManagementContainer,
+  Title,
+} from "./StyledComponents";
 
 function App() {
   const [currentMessages, setcurrentMessages] = useState();
-
+  const [postMessageStatus, setPostMessageStatus] = useState("");
   const queueRef = useRef();
   const messageRef = useRef();
 
   const handlePostClick = () => {
     const queueName = queueRef.current;
-    postQueue(queueName, messageRef).then((e) => {});
+    postQueue(queueName, messageRef.current).then((e) => {
+      debugger;
+      setPostMessageStatus(e.status.toString());
+    });
   };
   const handleGetClick = () => {
-    queueRef.current;
-    fetchQueue("queue").then((e) => {
-      //@ts-ignore
+    fetchQueue(queueRef.current).then((e) => {
       setcurrentMessages(e);
     });
   };
   const handleChange = (e: any, ref: any) => {
     ref.current = e.target.value;
   };
-  fetchQueue("queue");
-  postQueue("queue", "hello");
 
   return (
-    <div>
-      <title>Queue management</title>
-      <div>
+    <QueueManagementContainer>
+      <Title>Queue management</Title>
+      <CurrentMessageWrapper>
         CurrnetMessgae
-        {currentMessages}
-      </div>
-      <input
-        type="queue"
-        onChange={(e) => {
-          handleChange(e, queueRef);
-        }}
-      />
-      <input
-        type="messsage"
-        onChange={(e) => {
-          handleChange(e, messageRef);
-        }}
-      />
+        <CurrentMessage>{currentMessages}</CurrentMessage>
+      </CurrentMessageWrapper>
+      <QueueInputWrapper>
+        <QueueInput
+          type="queue"
+          placeholder="queue name"
+          onChange={(e) => {
+            handleChange(e, queueRef);
+          }}
+        />
+        <MessageInput
+          type="messsage"
+          placeholder="message"
+          onChange={(e) => {
+            handleChange(e, messageRef);
+          }}
+        />
+      </QueueInputWrapper>
+      <ButtonsWrapper>
+        <GetQueueButtonWrapper>
+          <GetQueueButton onClick={() => handleGetClick()}>
+            Get queue and message
+          </GetQueueButton>
+        </GetQueueButtonWrapper>
 
-      <div>
-        Get queue and message
-        <button onClick={() => handleGetClick()}></button>
-      </div>
+        <PostMessageButtonWrapper>
+          <PostMessageButton onClick={() => handlePostClick()}>
+            Send message to queue
+          </PostMessageButton>
+        </PostMessageButtonWrapper>
+      </ButtonsWrapper>
 
-      <div>
-        Send message to queue
-        <button onClick={() => handlePostClick()}></button>
-      </div>
-    </div>
+      <PostMessageStatusWrapper>
+        Post message status
+        <PostMessageStatus>{postMessageStatus}</PostMessageStatus>
+      </PostMessageStatusWrapper>
+    </QueueManagementContainer>
   );
 }
 
