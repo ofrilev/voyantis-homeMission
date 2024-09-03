@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"strconv"
 	"time"
+
+	"github.com/gorilla/mux"
 )
 
 type PostBody struct {
@@ -13,7 +15,8 @@ type PostBody struct {
 
 func PostQueue(w http.ResponseWriter, r *http.Request) {
 	var req PostBody
-	var queueName = r.URL.Query().Get("queue_name")
+	vars := mux.Vars(r)
+	queueName := vars["queue_name"]
 	if queueName == "" {
 		http.Error(w, "Queue name is required", http.StatusBadRequest)
 	}
@@ -43,11 +46,13 @@ func GetQueue(w http.ResponseWriter, r *http.Request) {
 	var timeOut = 10
 	start := time.Now()
 	var err error
-	var queueName = r.URL.Query().Get("queue_name")
+	vars := mux.Vars(r)
+	queueName := vars["queue_name"]
 	if queueName == "" {
 		http.Error(w, "Queue name is required", http.StatusBadRequest)
+		return
 	}
-	var timeOutStr = r.URL.Query().Get("timeout")
+	var timeOutStr = vars["timeout"]
 	if timeOutStr != "" {
 		timeOut, err = strconv.Atoi(timeOutStr)
 		if err != nil {
