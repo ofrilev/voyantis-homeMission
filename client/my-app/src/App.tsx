@@ -28,8 +28,9 @@ function App() {
   const handlePostClick = () => {
     const queueName = queueRef.current;
     postQueue(queueName, messageRef.current).then((e) => {
-      debugger;
-      setPostMessageStatus(e.status.toString());
+      if (e) {
+        setPostMessageStatus(e);
+      }
     });
   };
   const handleGetClick = () => {

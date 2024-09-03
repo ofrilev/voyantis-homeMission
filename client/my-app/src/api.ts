@@ -1,11 +1,23 @@
 import {config} from "../config/config"
 export const fetchQueue = async (queueName: any) => {
     const response = await  fetchOnPort(`${queueName}`, "GET")
-    const data =  await response.json()
-    return data
+    if (response.status && response.status == 200 ){
+        const data =  await response.json()
+        return data
+    }else{
+    return "empty queue"
+    }
 }
 export const postQueue = async (queueName: any, message: any) => {
-    return await postReq(`${queueName}`,  {Message:message})
+     const response = await postReq(`${queueName}`,  {Message:message})
+     if (response ) {
+     if (response.status == 0){
+      return "succeed"
+     }else{
+      return "failed"
+     }
+    }
+     
 }
 const fetchOnPort = (url: string, method?: string, data?: any) => {
     console.log(`${config.server.url}${url}`);

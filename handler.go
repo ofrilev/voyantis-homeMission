@@ -78,5 +78,5 @@ func GetQueue(w http.ResponseWriter, r *http.Request) {
 	queues[queueName] = val[1:]
 	w.WriteHeader(http.StatusOK)
 	w.Header().Set("Content-Type", "application/json")
-	w.Write([]byte(msg))
+	json.NewEncoder(w).Encode(msg)
 }
