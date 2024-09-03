@@ -9,13 +9,16 @@ function App() {
   const queueRef = useRef();
   const messageRef = useRef();
 
-  // const handlePostClick = () => {
-  //   postQueue(queueRef.current as string).then((e) => {
-  //     e.stat
-
-  // }
+  const handlePostClick = () => {
+    const queueName = queueRef.current;
+    postQueue(queueName, messageRef).then((e) => {});
+  };
   const handleGetClick = () => {
     queueRef.current;
+    fetchQueue("queue").then((e) => {
+      //@ts-ignore
+      setcurrentMessages(e);
+    });
   };
   const handleChange = (e: any, ref: any) => {
     ref.current = e.target.value;
@@ -26,6 +29,10 @@ function App() {
   return (
     <div>
       <title>Queue management</title>
+      <div>
+        CurrnetMessgae
+        {currentMessages}
+      </div>
       <input
         type="queue"
         onChange={(e) => {
@@ -41,16 +48,12 @@ function App() {
 
       <div>
         Get queue and message
-        <button
-        //  onClick={() => handlePostClick()}
-        ></button>
+        <button onClick={() => handleGetClick()}></button>
       </div>
 
       <div>
         Send message to queue
-        <button
-        // onClick={() => handlePostClick()}
-        ></button>
+        <button onClick={() => handlePostClick()}></button>
       </div>
     </div>
   );

@@ -1,8 +1,8 @@
 import {config} from "../config/config"
-export const fetchQueue = async (queueName: string) => {
+export const fetchQueue = async (queueName: any) => {
     fetchOnPort(`${queueName}`, "GET")
 }
-export const postQueue = async (queueName: string, message: string) => {
+export const postQueue = async (queueName: any, message: any) => {
     fetchOnPort(`${queueName}`, "POST", {message})
 }
 const fetchOnPort = (url: string, method?: string, data?: any) => {
