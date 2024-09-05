@@ -5,38 +5,56 @@ import { fetchQueue, postQueue } from "./api";
 import {
   ButtonsWrapper,
   CurrentMessage,
-  CurrentMessageWrapper,
-  GetQueueButton,
-  GetQueueButtonWrapper,
+  GetMessgaeWrapper,
+  MainWrapper,
   MessageInput,
-  PostMessageButton,
-  PostMessageButtonWrapper,
-  PostMessageStatus,
-  PostMessageStatusWrapper,
   QueueInput,
   QueueInputWrapper,
   QueueManagementContainer,
+  SendMessageWrapper,
+  StatusFrame,
+  StatusTitleWrapper,
+  StatusWrapper,
+  StyledButton,
   Title,
 } from "./StyledComponents";
 
 function App() {
-  const [currentMessages, setcurrentMessages] = useState();
-  const [postMessageStatus, setPostMessageStatus] = useState("");
-  const queueRef = useRef();
+  const [loading, setLoading] = useState(false);
+  const [getMessage, setGetMessage] = useState("no message");
+  const [postMessageStatus, setPostMessageStatus] = useState("no post status");
+
+  const getQueueRef = useRef();
+  const postQueueRef = useRef();
   const messageRef = useRef();
 
+  const isLoading = (data: string): React.JSX.Element => {
+    if (loading) {
+      return <>Loading....</>;
+    } else {
+      return <>{data}</>;
+    }
+  };
   const handlePostClick = () => {
-    const queueName = queueRef.current;
+    setLoading(true);
+    const queueName = postQueueRef.current;
     postQueue(queueName, messageRef.current).then((e) => {
       if (e) {
         setPostMessageStatus(e);
       }
+      setTimeout(() => {
+        setLoading(false);
+      }, 1000);
     });
   };
   const handleGetClick = () => {
-    fetchQueue(queueRef.current).then((e) => {
-      setcurrentMessages(e);
+    setLoading(true);
+    fetchQueue(getQueueRef.current).then((e) => {
+      setGetMessage(e);
     });
+    setTimeout(() => {
+      setLoading(false);
+    }, 1000);
   };
   const handleChange = (e: any, ref: any) => {
     ref.current = e.target.value;
@@ -45,44 +63,59 @@ function App() {
   return (
     <QueueManagementContainer>
       <Title>Queue management</Title>
-      <CurrentMessageWrapper>
-        CurrnetMessgae
-        <CurrentMessage>{currentMessages}</CurrentMessage>
-      </CurrentMessageWrapper>
-      <QueueInputWrapper>
-        <QueueInput
-          type="queue"
-          placeholder="queue name"
-          onChange={(e) => {
-            handleChange(e, queueRef);
-          }}
-        />
-        <MessageInput
-          type="messsage"
-          placeholder="message"
-          onChange={(e) => {
-            handleChange(e, messageRef);
-          }}
-        />
-      </QueueInputWrapper>
+      <MainWrapper>
+        <GetMessgaeWrapper>
+          <h2>Get messages</h2>
+          <QueueInputWrapper>
+            <QueueInput
+              type="queue"
+              placeholder="queue name"
+              onChange={(e) => {
+                handleChange(e, getQueueRef);
+              }}
+            />
+          </QueueInputWrapper>
+        </GetMessgaeWrapper>
+        <SendMessageWrapper>
+          <h2>Send messages</h2>
+          <QueueInputWrapper>
+            <QueueInput
+              type="queue"
+              placeholder="queue name"
+              onChange={(e) => {
+                handleChange(e, postQueueRef);
+              }}
+            />
+            <SendMessageWrapper>
+              <MessageInput
+                type="messsage"
+                placeholder="message"
+                onChange={(e) => {
+                  handleChange(e, messageRef);
+                }}
+              />
+            </SendMessageWrapper>
+          </QueueInputWrapper>
+        </SendMessageWrapper>
+      </MainWrapper>
       <ButtonsWrapper>
-        <GetQueueButtonWrapper>
-          <GetQueueButton onClick={() => handleGetClick()}>
-            Get queue and message
-          </GetQueueButton>
-        </GetQueueButtonWrapper>
-
-        <PostMessageButtonWrapper>
-          <PostMessageButton onClick={() => handlePostClick()}>
-            Send message to queue
-          </PostMessageButton>
-        </PostMessageButtonWrapper>
+        <StyledButton onClick={() => handleGetClick()}>
+          Get queue message
+        </StyledButton>
+        <StyledButton onClick={() => handlePostClick()}>
+          Send message&queue
+        </StyledButton>
       </ButtonsWrapper>
-
-      <PostMessageStatusWrapper>
-        Post message status
-        <PostMessageStatus>{postMessageStatus}</PostMessageStatus>
-      </PostMessageStatusWrapper>
+      <StatusFrame>
+        <StatusTitleWrapper>
+          <h4>Get status</h4>
+          <h4>Send status</h4>
+        </StatusTitleWrapper>
+        <StatusWrapper>
+          <CurrentMessage>{isLoading(getMessage)}</CurrentMessage>
+          <CurrentMessage>{isLoading(postMessageStatus)}</CurrentMessage>
+        </StatusWrapper>
+      </StatusFrame>
     </QueueManagementContainer>
   );
 }
