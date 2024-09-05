@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -26,5 +27,6 @@ func main() {
 	r.HandleFunc("/api/{queue_name}", PostQueue).Methods("POST")
 	r.HandleFunc("/api/{queue_name}", GetQueue).Methods("GET")
 	corsM := corsMiddleware(r)
+	fmt.Println("Server is running on port 8080...")
 	http.ListenAndServe(":8080", corsM)
 }
