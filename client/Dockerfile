@@ -4,24 +4,14 @@ FROM oven/bun:latest
 # Set the working directory in the container
 WORKDIR /client
 
-# Adding permissions to the app user
-# COPY --chown=app:app ./package.json ./bun.lockb 
-
-RUN bun init
-
-
-# Copy the package.json and bun.lockb (if applicable) to install dependencies
-COPY ./client/package.json ./client/.bun.lockb 
-
-
+# Copy the package.json and bun.lockb to install dependencies
+COPY ./client  .
 
 # Install the dependencies
-RUN bun install
+RUN bun install --frozen-lockfile
 
-# Copy the rest of the application code
-COPY ./client .
 
-# Expose the port that the Bun client runs on (e.g., 5173)
+# Expose the port that the Bun app runs on
 EXPOSE 3000
 
 # Run the Bun app

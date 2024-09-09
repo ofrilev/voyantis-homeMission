@@ -5,13 +5,13 @@ FROM golang:1.20
 WORKDIR /server
 
 # Copy go.mod and go.sum files to install dependencies
-COPY ./server/go.mod ./server/go.sum ./
+COPY ./server .
 
 # Install dependencies
 RUN go mod download
 
 # Copy the rest of the application code
-COPY ./server .
+
 
 # Build the Go server
 RUN go build -o server .

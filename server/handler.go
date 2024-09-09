@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"strconv"
 	"time"
@@ -14,6 +15,7 @@ type PostBody struct {
 }
 
 func PostQueue(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("Recived Post request")
 	var req PostBody
 	vars := mux.Vars(r)
 	queueName := vars["queue_name"]
@@ -43,6 +45,7 @@ func PostQueue(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetQueue(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("Recived Get request")
 	var timeOut = 10
 	start := time.Now()
 	var err error
